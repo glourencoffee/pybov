@@ -1,0 +1,1 @@
+from b3.parsing import daily_newsletter
