@@ -14,7 +14,7 @@ class CompanyDetail:
     company_name: str
     trading_name: str
     company_code: str
-    security_codes: typing.Tuple[SecurityCode]
+    security_codes: typing.List[SecurityCode]
     activity: str
     industry: str
     market: str

@@ -61,5 +61,5 @@ def company_detail(cvm_code: str) -> CompanyDetail:
         website                 = response['website'],
         last_date               = datetime.datetime.strptime(response['lastDate'], '%d/%m/%Y %H:%M:%S'),
         bvmf_describle_category = response['describleCategoryBVMF'],
-        security_codes          = tuple(security_codes)
+        security_codes          = security_codes
     )
