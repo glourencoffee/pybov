@@ -11,13 +11,12 @@ from b3.datatypes import (
 )
 
 __all__ = [
-    'DailyNewsletterType',
-    'DailyNewsletter'
+    'DailyBulletinType',
+    'DailyBulletin'
 ]
 
-class DailyNewsletterType(enum.IntEnum):
-    """BDI (Boletim Diário de Informações; "Daily Newsletter")"""
 
+class DailyBulletinType(enum.IntEnum):
     ROUND_LOT                                          = 2  # Lote padrão
     BMFBOVESPA_REGULATIONS_SANCTION                    = 5  # Sancionadas pelos regulamentos BMF&Bovespa
     STOCKS_OF_COMPANIES_UNDER_REORGANIZATION           = 6  # Concordatárias
@@ -61,9 +60,10 @@ class DailyNewsletterType(enum.IntEnum):
     ODD_LOT                                            = 96
 
 @dataclasses.dataclass(init=True, repr=True)
-class DailyNewsletter:
+class DailyBulletin:
     exchange_date: datetime.date
-    type: DailyNewsletterType
+    type: DailyBulletinType
+    isin: str
     ticker: str
     market_type: MarketType
     company_short_name: str
@@ -79,5 +79,4 @@ class DailyNewsletter:
     maturity_date: datetime.date
     quote_size: QuoteSize
     strike_price_points: decimal.Decimal
-    isin: str
     distribution_number: int
