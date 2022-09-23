@@ -6,6 +6,7 @@ from b3.exceptions import RequestError
 from b3.utils      import btoa
 
 __all__ = [
+    'base_url',
     'company_detail'
 ]
 
@@ -20,8 +21,11 @@ def _make_service_string(cvm_code: int, language: str) -> str:
 
     return base64_str
 
+def base_url() -> str:
+    return 'https://sistemaswebb3-listados.b3.com.br/'
+
 def company_detail(cvm_code: int) -> CompanyDetail:
-    url = 'https://sistemaswebb3-listados.b3.com.br/listedCompaniesProxy/CompanyCall/GetDetail/' + _make_service_string(cvm_code, 'pt-BR')
+    url = base_url() + 'listedCompaniesProxy/CompanyCall/GetDetail/' + _make_service_string(cvm_code, 'pt-BR')
 
     response = requests.get(url)
     response = response.json()
