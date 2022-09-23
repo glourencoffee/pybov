@@ -24,7 +24,7 @@ def _make_service_string(cvm_code: int, language: str) -> str:
 def base_url() -> str:
     return 'https://sistemaswebb3-listados.b3.com.br/'
 
-def company_detail(cvm_code: int) -> CompanyDetail:
+def company_detail(cvm_code: str) -> CompanyDetail:
     url = base_url() + 'listedCompaniesProxy/CompanyCall/GetDetail/' + _make_service_string(cvm_code, 'pt-BR')
 
     response = requests.get(url)
@@ -42,8 +42,8 @@ def company_detail(cvm_code: int) -> CompanyDetail:
         pass
 
     return CompanyDetail(
-        cnpj                    = int(response['cnpj']),
-        cvm_code                = int(response['codeCVM']),
+        cnpj                    = response['cnpj'],
+        cvm_code                = response['codeCVM'],
         company_name            = response['companyName'],
         company_code            = response['issuingCompany'],
         trading_name            = response['tradingName'],

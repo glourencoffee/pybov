@@ -9,8 +9,8 @@ __all__ = [
 
 @dataclasses.dataclass(init=True)
 class CompanyDetail:
-    cnpj: int
-    cvm_code: int
+    cnpj: str
+    cvm_code: str
     company_name: str
     trading_name: str
     company_code: str
