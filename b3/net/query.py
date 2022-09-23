@@ -41,25 +41,28 @@ def company_detail(cvm_code: str) -> CompanyDetail:
     except KeyError:
         pass
 
-    return CompanyDetail(
-        cnpj                    = response['cnpj'],
-        cvm_code                = response['codeCVM'],
-        company_name            = response['companyName'],
-        company_code            = response['issuingCompany'],
-        trading_name            = response['tradingName'],
-        activity                = response['activity'],
-        industry                = response['industryClassification'],
-        market                  = response['market'],
-        market_indicator        = response['marketIndicator'],
-        has_bdr                 = response['hasBDR'],
-        bdr_type                = response['typeBDR'],
-        has_emissions           = response['hasEmissions'],
-        has_quotation           = response['hasQuotation'],
-        common_institution      = response['institutionCommon'],
-        preferred_institution   = response['institutionPreferred'],
-        status                  = response['status'],
-        website                 = response['website'],
-        last_date               = datetime.datetime.strptime(response['lastDate'], '%d/%m/%Y %H:%M:%S'),
-        bvmf_describle_category = response['describleCategoryBVMF'],
-        security_codes          = security_codes
-    )
+    try:
+        return CompanyDetail(
+            cnpj                    = response['cnpj'],
+            cvm_code                = response['codeCVM'],
+            company_name            = response['companyName'],
+            company_code            = response['issuingCompany'],
+            trading_name            = response['tradingName'],
+            activity                = response['activity'],
+            industry                = response['industryClassification'],
+            market                  = response['market'],
+            market_indicator        = response['marketIndicator'],
+            has_bdr                 = response['hasBDR'],
+            bdr_type                = response['typeBDR'],
+            has_emissions           = response['hasEmissions'],
+            has_quotation           = response['hasQuotation'],
+            common_institution      = response['institutionCommon'],
+            preferred_institution   = response['institutionPreferred'],
+            status                  = response['status'],
+            website                 = response['website'],
+            last_date               = datetime.datetime.strptime(response['lastDate'], '%d/%m/%Y %H:%M:%S'),
+            bvmf_describle_category = response['describleCategoryBVMF'],
+            security_codes          = security_codes
+        )
+    except KeyError as exc:
+        raise RequestError(f"Missing key '{exc.args[0]}'") from None
