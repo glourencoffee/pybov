@@ -1,6 +1,9 @@
+from __future__ import annotations
 import collections
+import contextlib
 import enum
 import functools
+import os
 import typing
 from b3.datatypes import (
     DailyBulletinType,
@@ -132,9 +135,22 @@ def _make_daily_bulleting(values: typing.Dict[str, typing.Any]) -> DailyBulletin
         distribution_number           = values['DISMES']
     )
 
-def historical_quotes_reader(stream: typing.IO) -> typing.Generator[DailyBulletin, None, None]:
+def _reader(stream: typing.TextIO) -> typing.Generator[DailyBulletin, None, None]:
     for line in stream:
         registry_type, values = _parse_line(line)
 
         if registry_type == _RegistryType.QUOTES:
             yield _make_daily_bulleting(values)
+
+@contextlib.contextmanager
+def historical_quotes_reader(file: typing.Union[str, os.PathLike, typing.TextIO]):
+    if isinstance(file, (str, os.PathLike)):
+        try:
+            file   = open(file, mode='r', encoding='ascii')
+            reader = _reader(file)
+            yield reader
+        finally:
+            file.close()
+    else:
+        reader = _reader(file)
+        yield reader
