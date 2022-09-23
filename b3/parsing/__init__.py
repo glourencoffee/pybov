@@ -1,1 +1,1 @@
-from b3.parsing import daily_newsletter
+from b3.parsing.historical_quotes import *

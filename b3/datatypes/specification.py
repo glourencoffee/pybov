@@ -1,5 +1,9 @@
 import enum
 
+__all__ = [
+    'Specification'
+]
+
 class Specification(enum.Enum):
     BDR     = 'BDR'     # Brazilian Depositary Receipt
     BNS     = 'BNS'     # Subscription bonus for miscellaneous

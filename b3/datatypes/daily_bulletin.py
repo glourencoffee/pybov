@@ -2,11 +2,21 @@ import dataclasses
 import datetime
 import decimal
 import enum
-from b3 import datatypes
+from b3.datatypes import (
+    ContractCorrection,
+    Quotes,
+    QuoteSize,
+    Specification,
+    MarketType
+)
 
-class DailyNewsletterType(enum.IntEnum):
-    """BDI (Boletim Diário de Informações; "Daily Newsletter")"""
+__all__ = [
+    'DailyBulletinType',
+    'DailyBulletin'
+]
 
+
+class DailyBulletinType(enum.IntEnum):
     ROUND_LOT                                          = 2  # Lote padrão
     BMFBOVESPA_REGULATIONS_SANCTION                    = 5  # Sancionadas pelos regulamentos BMF&Bovespa
     STOCKS_OF_COMPANIES_UNDER_REORGANIZATION           = 6  # Concordatárias
@@ -50,23 +60,23 @@ class DailyNewsletterType(enum.IntEnum):
     ODD_LOT                                            = 96
 
 @dataclasses.dataclass(init=True, repr=True)
-class DailyNewsletter:
+class DailyBulletin:
     exchange_date: datetime.date
-    type: DailyNewsletterType
+    type: DailyBulletinType
+    isin: str
     ticker: str
-    market_type: datatypes.MarketType
+    market_type: MarketType
     company_short_name: str
-    especification: datatypes.Specification
+    especification: Specification
     forward_market_remaining_days: int
     reference_currency: str
-    quotes: datatypes.Quotes
+    quotes: Quotes
     total_trade_market: int
     total_trade_count: int
     total_trade_volume: decimal.Decimal
     strike_price: decimal.Decimal
-    strike_price_correction_type: datatypes.ContractCorrection
+    strike_price_correction_type: ContractCorrection
     maturity_date: datetime.date
-    quote_size: datatypes.QuoteSize
+    quote_size: QuoteSize
     strike_price_points: decimal.Decimal
-    isin: str
     distribution_number: int

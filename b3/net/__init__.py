@@ -1,1 +1,1 @@
-from b3.net.query import query_company
+from b3.net.query import *

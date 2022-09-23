@@ -1,4 +1,6 @@
 __pycache__
-b3.egg-info
+pybov.egg-info
 .vscode
 data
+build
+dist

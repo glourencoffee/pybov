@@ -1,16 +1,20 @@
 import dataclasses
 import datetime
 import typing
-from b3 import datatypes
+from b3.datatypes import SecurityCode
+
+__all__ = [
+    'CompanyDetail'
+]
 
 @dataclasses.dataclass(init=True)
 class CompanyDetail:
-    cnpj: int
-    cvm_code: int
+    cnpj: str
+    cvm_code: str
     company_name: str
     trading_name: str
     company_code: str
-    security_codes: typing.Tuple[datatypes.SecurityCode]
+    security_codes: typing.List[SecurityCode]
     activity: str
     industry: str
     market: str
