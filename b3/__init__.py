@@ -1,3 +1,3 @@
-from b3 import datatypes
-from b3 import parsing
-from b3 import net
+from b3.datatypes import *
+from b3.parsing   import *
+from b3.net       import *

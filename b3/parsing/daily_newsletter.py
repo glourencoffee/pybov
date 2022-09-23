@@ -2,7 +2,30 @@ import collections
 import enum
 import functools
 import typing
-from b3 import datatypes, utils
+from b3.datatypes import (
+    DailyNewsletterType,
+    DailyNewsletter,
+    MarketType,
+    ContractCorrection,
+    QuoteSize,
+    Quotes
+)
+from b3.utils import (
+    date_from_string,
+    pic11v99,
+    pic16v99,
+    pic7v06
+)
+
+__all__ = [
+    'RegistryType',
+    'QuotesField',
+    'quotes_fields',
+    'parse_line',
+    'make_quotes',
+    'make_daily_newsletter',
+    'reader'
+]
 
 class RegistryType(enum.Enum):
     HEADER  = '00'
@@ -14,29 +37,29 @@ QuotesField = collections.namedtuple('QuotesField', ['name', 'size', 'factory'])
 @functools.lru_cache
 def quotes_fields():
     return (
-        QuotesField('EXCDAT', 8,  utils.date_from_string),
-        QuotesField('CODBDI', 2,  lambda value: datatypes.DailyNewsletterType(int(value))),
+        QuotesField('EXCDAT', 8,  date_from_string),
+        QuotesField('CODBDI', 2,  lambda value: DailyNewsletterType(int(value))),
         QuotesField('CODNEG', 12, str),
-        QuotesField('TPMERC', 3,  datatypes.MarketType),
+        QuotesField('TPMERC', 3,  MarketType),
         QuotesField('NOMRES', 12, str),
         QuotesField('ESPECI', 10, str),
         QuotesField('PRAZOT', 3,  lambda value: int(value) if value != '' else None),
         QuotesField('MODREF', 4,  str),
-        QuotesField('PREABE', 13, utils.pic11v99),
-        QuotesField('PREMAX', 13, utils.pic11v99),
-        QuotesField('PREMIN', 13, utils.pic11v99),
-        QuotesField('PREMED', 13, utils.pic11v99),
-        QuotesField('PREULT', 13, utils.pic11v99),
-        QuotesField('PREOFC', 13, utils.pic11v99),
-        QuotesField('PREOFV', 13, utils.pic11v99),
+        QuotesField('PREABE', 13, pic11v99),
+        QuotesField('PREMAX', 13, pic11v99),
+        QuotesField('PREMIN', 13, pic11v99),
+        QuotesField('PREMED', 13, pic11v99),
+        QuotesField('PREULT', 13, pic11v99),
+        QuotesField('PREOFC', 13, pic11v99),
+        QuotesField('PREOFV', 13, pic11v99),
         QuotesField('TOTNEG', 5,  int),
         QuotesField('QUATOT', 18, int),
-        QuotesField('VOLTOT', 18, utils.pic16v99),
-        QuotesField('PREEXE', 13, utils.pic11v99),
-        QuotesField('INDOPC', 1,  lambda value: datatypes.ContractCorrection(int(value)) if int(value) != 0 else None),
-        QuotesField('DATVEN', 8,  utils.date_from_string),
-        QuotesField('FATCOT', 7,  lambda value: datatypes.QuoteSize(int(value))),
-        QuotesField('PTOEXE', 13, utils.pic7v06),
+        QuotesField('VOLTOT', 18, pic16v99),
+        QuotesField('PREEXE', 13, pic11v99),
+        QuotesField('INDOPC', 1,  lambda value: ContractCorrection(int(value)) if int(value) != 0 else None),
+        QuotesField('DATVEN', 8,  date_from_string),
+        QuotesField('FATCOT', 7,  lambda value: QuoteSize(int(value))),
+        QuotesField('PTOEXE', 13, pic7v06),
         QuotesField('CODISI', 12, str),
         QuotesField('DISMES', 3,  int),
     )
@@ -81,8 +104,8 @@ def parse_line(line: str) -> typing.Tuple[RegistryType, typing.Dict[str, typing.
     else:
         raise ValueError(f'unknown registry type {registry_type}')
 
-def make_quotes(values: typing.Dict[str, typing.Any]):
-    return datatypes.Quotes(
+def make_quotes(values: typing.Dict[str, typing.Any]) -> Quotes:
+    return Quotes(
         open     = values['PREABE'],
         high     = values['PREMAX'],
         low      = values['PREMIN'],
@@ -92,8 +115,8 @@ def make_quotes(values: typing.Dict[str, typing.Any]):
         best_bid = values['PREOFV']
     )
 
-def make_daily_newsletter(values: typing.Dict[str, typing.Any]) -> datatypes.DailyNewsletter:
-    return datatypes.DailyNewsletter(
+def make_daily_newsletter(values: typing.Dict[str, typing.Any]) -> DailyNewsletter:
+    return DailyNewsletter(
         exchange_date                 = values['EXCDAT'],
         type                          = values['CODBDI'],
         ticker                        = values['CODNEG'],
@@ -115,7 +138,7 @@ def make_daily_newsletter(values: typing.Dict[str, typing.Any]) -> datatypes.Dai
         distribution_number           = values['DISMES']
     )
 
-def reader(file: typing.IO) -> typing.Generator[datatypes.DailyNewsletter, None, None]:
+def reader(file: typing.IO) -> typing.Generator[DailyNewsletter, None, None]:
     for line in file:
         registry_type, values = parse_line(line)
 

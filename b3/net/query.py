@@ -1,47 +1,43 @@
-import base64
 import datetime
 import json
 import requests
-from b3 import datatypes, exceptions
+from b3.datatypes  import CompanyDetail, SecurityCode
+from b3.exceptions import RequestError
+from b3.utils      import btoa
 
-def jsonify(obj: dict) -> str:
-    return json.dumps(obj, indent=None, separators=(',', ':'))
+__all__ = [
+    'company_detail'
+]
 
-def btoa(s: str) -> bytes:
-    utf8_data   = s.encode('utf-8')
-    base64_data = base64.b64encode(utf8_data)
-
-    return base64_data.decode('utf-8')
-
-def make_service_string(cvm_code: int, language: str) -> str:
+def _make_service_string(cvm_code: int, language: str) -> str:
     json_obj = {
         'codeCVM': str(cvm_code),
         'language': language
     }
 
-    json_str   = jsonify(json_obj)
+    json_str   = json.dumps(json_obj, indent=None, separators=(',', ':'))
     base64_str = btoa(json_str)
 
     return base64_str
 
-def query_company(cvm_code: int) -> datatypes.CompanyDetail:
-    url = 'https://sistemaswebb3-listados.b3.com.br/listedCompaniesProxy/CompanyCall/GetDetail/' + make_service_string(cvm_code, 'pt-BR')
+def company_detail(cvm_code: int) -> CompanyDetail:
+    url = 'https://sistemaswebb3-listados.b3.com.br/listedCompaniesProxy/CompanyCall/GetDetail/' + _make_service_string(cvm_code, 'pt-BR')
 
     response = requests.get(url)
     response = response.json()
 
     if len(response) == 0:
-        raise exceptions.RequestError(f'no company found with CVM code {cvm_code}')
+        raise RequestError(f'no company found with CVM code {cvm_code}')
 
     security_codes = []
 
     try:
         for elem in response['otherCodes']:
-            security_codes.append(datatypes.SecurityCode(elem['code'], elem['isin']))
+            security_codes.append(SecurityCode(elem['code'], elem['isin']))
     except KeyError:
         pass
 
-    return datatypes.CompanyDetail(
+    return CompanyDetail(
         cnpj                    = int(response['cnpj']),
         cvm_code                = int(response['codeCVM']),
         company_name            = response['companyName'],
