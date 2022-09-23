@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 import versioneer
 
 with open('README_en_US.md', mode='r', encoding='utf-8') as f:
@@ -14,7 +14,7 @@ setup(name                          = 'pybov',
       author_email                  = 'callmegiorgio@hotmail.com',
       url                           = 'https://github.com/callmegiorgio/pybov/',
       license                       = 'MIT',
-      packages                      = ['b3'],
+      packages                      = find_packages(),
       keywords                      = ['investment', 'finances'],
       install_requires              = [],
       python_requires               = '>=3.7'
